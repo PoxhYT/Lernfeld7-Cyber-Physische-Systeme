@@ -1,4 +1,4 @@
-package com.example.lf_07_cyber_physical_system
+package de.poxh.enviro
 
 import io.flutter.embedding.android.FlutterActivity
 

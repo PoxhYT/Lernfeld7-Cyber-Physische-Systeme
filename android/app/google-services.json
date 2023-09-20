@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1098086294215",
+    "project_id": "lf07-cyber-physical-system",
+    "storage_bucket": "lf07-cyber-physical-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098086294215:android:3800861d081d7bd903d4e2",
+        "android_client_info": {
+          "package_name": "de.poxh.enviro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvyqUk9O4xwAAy0Cx2QUEVaIc_qrefPzg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBHtMSkV8Dcb2A85DuHPLKIp_W_bP9I0E0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1098086294215</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.lf07CyberPhysicalSystem</string>
+	<key>PROJECT_ID</key>
+	<string>lf07-cyber-physical-system</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lf07-cyber-physical-system.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1098086294215:ios:2450018ff461755e03d4e2</string>
+</dict>
+</plist>
