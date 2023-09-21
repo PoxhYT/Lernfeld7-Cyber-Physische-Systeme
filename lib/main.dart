@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:lf_07_cyber_physical_system/firebase_options.dart';
 
@@ -15,6 +16,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    FirebaseMessaging.instance.getToken().then((value) {
+      if(value != null) {
+        print(value);
+      }
+    });
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
