@@ -26,7 +26,7 @@ app.use(express.json());
 
 app.get('/', async (req, res) => {
     try {
-        const testCollection = collection(db, 'test');
+        const testCollection = collection(db, 'thermals');
         const testSnapshot = await getDocs(testCollection);
         const testDocs = testSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         res.json(testDocs);
