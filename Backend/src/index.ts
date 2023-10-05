@@ -24,6 +24,30 @@ const db = getFirestore(firebaseApp);
 
 app.use(express.json());
 
+const getRandomNumber = (min: number, max: number) => {
+    return Math.random() * (max - min) + min;
+}
+
+const sendTemperatureData = async () => {
+    try {
+        const temperature = getRandomNumber(20, 40);
+        const humidity = getRandomNumber(20, 40);
+
+        const response = await fetch('http://localhost:3000/temperatures', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ temperature, humidity })
+        });
+
+        const data = await response.text();
+        console.log('Response:', data);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
 app.get('/', async (req, res) => {
     try {
         const testCollection = collection(db, 'thermals');
@@ -38,22 +62,14 @@ app.get('/', async (req, res) => {
 
 app.post('/temperatures', async (req, res) => {
     try {
-        // Extract temperature from the request body
         const { temperature, humidity } = req.body;
-        console.log("Request Body:", req.body);
 
-        
-        // Check if temperature is provided
-        
-
-        // Prepare data to save to Firestore
         const dataToSave = {
             temperature,
             humidity,
-            timestamp: serverTimestamp() // Firebase server-side timestamp
+            timestamp: serverTimestamp()
         };
 
-        // Add data to Firestore
         const tempCollection = collection(db, 'thermals');
         await addDoc(tempCollection, dataToSave);
 
@@ -66,4 +82,5 @@ app.post('/temperatures', async (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    setInterval(sendTemperatureData, 2000);
 });
