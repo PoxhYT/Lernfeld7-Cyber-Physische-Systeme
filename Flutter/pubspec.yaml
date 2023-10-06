@@ -42,6 +42,7 @@ dependencies:
   fl_chart: ^0.63.0
   cloud_firestore: ^4.9.3
   intl: ^0.18.1
+  syncfusion_flutter_charts: ^23.1.39
 
 dev_dependencies:
   flutter_test:
