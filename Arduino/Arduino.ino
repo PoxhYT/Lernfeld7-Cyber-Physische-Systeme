@@ -30,8 +30,7 @@ void setup() {
 }
 
 void loop() {
-  //if(IsConnectedToWifi) readDHTSensorAndSendData();
-  if(IsConnectedToWifi) Serial.println("\nSending data to backend");
+  if(IsConnectedToWifi) readDHTSensorAndSendData();
   delay(2000);
 }
 
@@ -46,6 +45,24 @@ void connectToWiFi() {
 
   IsConnectedToWifi = true;
   Serial.println("\nConnected to WiFi");
+}
+
+void sendRequestToSteam() {
+  BearSSL::WiFiClientSecure client;
+  client.setInsecure();
+
+  HTTPClient https;
+  https.begin(client, "https://super-sopapillas-4b452b.netlify.app/.netlify/functions/api/firebase-status");
+  int httpCode = https.GET();
+  Serial.print("HTTP Response Code: ");
+  Serial.println(httpCode);
+
+  if (httpCode > 0) { //Check the returning code
+    String payload = https.getString(); //Get the request response payload
+    Serial.println(httpCode); //Print the response payload
+  }
+
+  https.end();
 }
 
 void readDHTSensorAndSendData() {
@@ -69,7 +86,7 @@ void readDHTSensorAndSendData() {
     client.setInsecure();
 
     HTTPClient https;
-    https.begin(client, "http://localhost/temperature"); //Specify the URL
+    https.begin(client, "https://super-sopapillas-4b452b.netlify.app/.netlify/functions/api/temperatures"); //Specify the URL
     https.addHeader("Content-Type", "application/json");
 
     StaticJsonDocument<200> doc;
@@ -81,9 +98,16 @@ void readDHTSensorAndSendData() {
     int httpCode = https.POST(requestBody); //Send the request
     String payload = https.getString(); //Get the response payload
 
-    Serial.print("HTTP Response Code: ");
-    Serial.println(httpCode);   // Print HTTP return code
-    Serial.println(payload);    // Print request response payload
+    if(httpCode > 0) {
+        String payload = https.getString(); //Get the response payload
+        Serial.print("Response Code: ");
+        Serial.println(httpCode);   // Print HTTP return code
+        Serial.println(payload);    // Print request response payload
+    } else {
+        Serial.print("Error on sending POST: ");
+        Serial.println(https.errorToString(httpCode));
+    }
+      // Print request response payload
 
     https.end();  //Close connection
   } else {
