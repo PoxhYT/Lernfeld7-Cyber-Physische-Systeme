@@ -54,7 +54,7 @@ router.post('/temperatures', async (req, res) => {
         const dataToSave = {
             temperature,
             humidity,
-            timestamp: new Date().getMilliseconds
+            timestamp: serverTimestamp()
         };
 
         try {
