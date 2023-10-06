@@ -3,10 +3,11 @@ require('dotenv').config();
 import express from 'express';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc, serverTimestamp  } from 'firebase/firestore';
-
+import serverless from 'serverless-http';
 
 const app = express();
 const PORT = 3000;
+export const handler = serverless(app);
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -89,3 +90,5 @@ app.listen(PORT, () => {
 });
 
 app.use(`/.netlify/functions/api`, router);
+module.exports = app;
+module.exports.handler = serverless(app);
