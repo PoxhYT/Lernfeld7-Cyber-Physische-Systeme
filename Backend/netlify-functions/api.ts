@@ -41,7 +41,7 @@ router.get('/getThermals', async (req, res) => {
         const thermals = thermalsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         res.json(thermals);
     } catch (error) {
-        console.error("Error reading the database", error);
+        console.error("Error reading the databae", error);
         res.status(500).send("Error reading the database");
     }
 });
