@@ -4,13 +4,15 @@
 #include <DHT.h>
 
 // WiFi credentials
-const char* ssid     = "Your-SSID";
-const char* password = "Your-Password";
+const char* ssid     = "BS14-STUDENTS-BYOD";
+const char* password = "322984238";
 
 // Pin configuration
 const int DHTPin = 2;  // GPIO2
 const int redLampPin = 14;  // GPIO14
-const int greenLampPin = 12;  // GPIO12
+const int greenLampPin = 12;
+
+bool IsConnectedToWifi;  // GPIO12
 
 // Initialize DHT sensor
 #define DHTTYPE DHT11   // DHT 11
@@ -28,8 +30,9 @@ void setup() {
 }
 
 void loop() {
-  readDHTSensorAndSendData();
-  delay(2000); // Send data every 2 seconds
+  //if(IsConnectedToWifi) readDHTSensorAndSendData();
+  if(IsConnectedToWifi) Serial.println("\nSending data to backend");
+  delay(2000);
 }
 
 void connectToWiFi() {
@@ -38,9 +41,10 @@ void connectToWiFi() {
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.print(".");
+    Serial.print("Waiting for connection");
   }
 
+  IsConnectedToWifi = true;
   Serial.println("\nConnected to WiFi");
 }
 
@@ -60,9 +64,13 @@ void readDHTSensorAndSendData() {
   Serial.println(F("°C "));
 
   if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
-    http.begin("http://localhost/temperature"); //Specify the URL
-    http.addHeader("Content-Type", "application/json");
+
+     BearSSL::WiFiClientSecure client;
+    client.setInsecure();
+
+    HTTPClient https;
+    https.begin(client, "http://localhost/temperature"); //Specify the URL
+    https.addHeader("Content-Type", "application/json");
 
     StaticJsonDocument<200> doc;
     doc["temperature"] = t;
@@ -70,14 +78,14 @@ void readDHTSensorAndSendData() {
     String requestBody;
     serializeJson(doc, requestBody);
 
-    int httpCode = http.POST(requestBody); //Send the request
-    String payload = http.getString(); //Get the response payload
+    int httpCode = https.POST(requestBody); //Send the request
+    String payload = https.getString(); //Get the response payload
 
     Serial.print("HTTP Response Code: ");
     Serial.println(httpCode);   // Print HTTP return code
     Serial.println(payload);    // Print request response payload
 
-    http.end();  //Close connection
+    https.end();  //Close connection
   } else {
     Serial.println("Not connected to WiFi");
   }
