@@ -60,6 +60,10 @@ app.get('/', async (req, res) => {
     }
 });
 
+app.get('/', async (req, res) => {
+    res.send("Backend is running :)");
+});
+
 app.post('/temperatures', async (req, res) => {
     try {
         const { temperature, humidity } = req.body;
