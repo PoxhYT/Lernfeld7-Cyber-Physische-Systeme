@@ -49,9 +49,11 @@ router.get('/getThermals', async (req, res) => {
 router.post('/temperatures', async (req, res) => {
     if (!firebaseConnectionSuccessful) {
         return res.status(500).send('Firebase connection unsuccessful');
+    } else {
+        return res.status(200).send('This is a test');
     }
 
-    try {
+    /* try {
         const { temperature, humidity } = req.body;
         const dataToSave = {
             temperature,
@@ -66,7 +68,7 @@ router.post('/temperatures', async (req, res) => {
     } catch (error) {
         console.error("Error saving to the database", error);
         res.status(500).send("Error saving to the database");
-    }
+    } */
 });
 
 router.get('/firebase-status', (req, res) => {
