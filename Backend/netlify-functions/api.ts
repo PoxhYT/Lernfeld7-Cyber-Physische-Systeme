@@ -2,11 +2,10 @@ require('dotenv').config();
 
 import express from 'express';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, addDoc, serverTimestamp  } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import serverless from 'serverless-http';
 
 const app = express();
-const PORT = 3000;
 export const handler = serverless(app);
 
 const firebaseConfig = {
@@ -19,42 +18,29 @@ const firebaseConfig = {
     measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
+let firebaseConnectionSuccessful = false;
 
-const getRandomNumber = (min: number, max: number) => {
-    return Math.random() * (max - min) + min;
-}
-
-const sendTemperatureData = async () => {
-    try {
-        const temperature = getRandomNumber(20, 40);
-        const humidity = getRandomNumber(20, 40);
-
-        const response = await fetch('http://localhost:3000/temperatures', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ temperature, humidity })
-        });
-
-        const data = await response.text();
-        console.log('Response:', data);
-    } catch (error) {
-        console.error('Error:', error);
-    }
+try {
+    const firebaseApp = initializeApp(firebaseConfig);
+    getFirestore(firebaseApp); // This is just to initialize and check the connection, not storing it to a variable here
+    firebaseConnectionSuccessful = true;
+} catch (error) {
+    console.error('Error initializing Firebase', error);
 }
 
 app.use(express.json());
 const router = express.Router();
 
 router.get('/', async (req, res) => {
+    if (!firebaseConnectionSuccessful) {
+        return res.status(500).send('Firebase connection unsuccessful');
+    }
+
     try {
-        const testCollection = collection(db, 'thermals');
-        const testSnapshot = await getDocs(testCollection);
-        const testDocs = testSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        res.json(testDocs);
+        const thermalsCollection = collection(getFirestore(), 'thermals');
+        const thermalsSnapshot = await getDocs(thermalsCollection);
+        const thermals = thermalsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        res.json(thermals);
     } catch (error) {
         console.error("Error reading the database", error);
         res.status(500).send("Error reading the database");
@@ -62,19 +48,20 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/temperatures', async (req, res) => {
-    try {
-        console.log(req.body);
-        
-        const { temperature, humidity } = req.body;
+    if (!firebaseConnectionSuccessful) {
+        return res.status(500).send('Firebase connection unsuccessful');
+    }
 
+    try {
+        const { temperature, humidity } = req.body;
         const dataToSave = {
             temperature,
             humidity,
             timestamp: serverTimestamp()
         };
 
-        const tempCollection = collection(db, 'thermals');
-        await addDoc(tempCollection, dataToSave);
+        const thermalsCollection = collection(getFirestore(), 'thermals');
+        await addDoc(thermalsCollection, dataToSave);
 
         res.status(200).send('Data saved successfully');
     } catch (error) {
@@ -83,11 +70,15 @@ router.post('/temperatures', async (req, res) => {
     }
 });
 
-app.use(router);
-
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+router.get('/firebase-status', (req, res) => {
+    if (firebaseConnectionSuccessful) {
+        res.status(200).send('Firebase connection successful');
+    } else {
+        res.status(500).send('Firebase connection unsuccessful');
+    }
 });
+
+app.use(router);
 
 app.use(`/.netlify/functions/api`, router);
 module.exports = app;
