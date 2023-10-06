@@ -47,9 +47,12 @@ router.get('/getThermals', async (req, res) => {
 });
 
 router.post('/temperatures', async (req, res) => {
+    console.log('Function invoked');
     if (!firebaseConnectionSuccessful) {
+        console.log('Firebase connection unsuccessful');
         return res.status(500).send('Firebase connection unsuccessful');
     } else {
+        console.log('Preparing data to save');
         const { temperature, humidity } = req.body;
         const dataToSave = {
             temperature,
@@ -58,8 +61,10 @@ router.post('/temperatures', async (req, res) => {
         };
 
         try {
+            console.log('Attempting to save data');
             const thermalsCollection = collection(getFirestore(), 'thermals');
             await addDoc(thermalsCollection, dataToSave);
+            console.log('Data saved successfully');
             res.status(200).send('Data saved successfully');
         } catch (error) {
             console.error("Error saving to the database", error);
@@ -67,6 +72,7 @@ router.post('/temperatures', async (req, res) => {
         }
     }
 });
+
 
 router.get('/firebase-status', (req, res) => {
     if (firebaseConnectionSuccessful) {
