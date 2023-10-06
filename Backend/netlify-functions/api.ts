@@ -30,7 +30,7 @@ try {
 app.use(express.json());
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/getThermals', async (req, res) => {
     if (!firebaseConnectionSuccessful) {
         return res.status(500).send('Firebase connection unsuccessful');
     }
