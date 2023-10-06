@@ -1,10 +1,9 @@
 require('dotenv').config();
 
-import { log } from 'console';
 import express from 'express';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc, serverTimestamp  } from 'firebase/firestore';
-import { CLIENT_RENEG_LIMIT } from 'tls';
+
 
 const app = express();
 const PORT = 3000;
@@ -21,8 +20,6 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
-
-app.use(express.json());
 
 const getRandomNumber = (min: number, max: number) => {
     return Math.random() * (max - min) + min;
@@ -48,7 +45,9 @@ const sendTemperatureData = async () => {
     }
 }
 
-app.get('/', async (req, res) => {
+const router = express.Router();
+
+router.get('/', async (req, res) => {
     try {
         const testCollection = collection(db, 'thermals');
         const testSnapshot = await getDocs(testCollection);
@@ -60,11 +59,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.get('/', async (req, res) => {
-    res.send("Backend is running :)");
-});
-
-app.post('/temperatures', async (req, res) => {
+router.post('/temperatures', async (req, res) => {
     try {
         const { temperature, humidity } = req.body;
 
@@ -84,6 +79,10 @@ app.post('/temperatures', async (req, res) => {
     }
 });
 
+app.use(router);
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+app.use(`/.netlify/functions/api`, router);
