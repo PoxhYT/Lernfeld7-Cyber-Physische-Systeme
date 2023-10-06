@@ -6,7 +6,6 @@ import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from 'fire
 import serverless from 'serverless-http';
 
 const app = express();
-export const handler = serverless(app);
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -81,5 +80,6 @@ router.get('/firebase-status', (req, res) => {
 app.use(router);
 
 app.use(`/.netlify/functions/api`, router);
-module.exports = app;
-module.exports.handler = serverless(app);
+
+export const handler = serverless(app);
+export default app;
