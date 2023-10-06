@@ -50,7 +50,8 @@ router.post('/temperatures', async (req, res) => {
     if (!firebaseConnectionSuccessful) {
         return res.status(500).send('Firebase connection unsuccessful');
     } else {
-        return res.status(200).send('This is a test');
+        const { temperature, humidity } = req.body;
+        return res.status(200).send(temperature + " | " + humidity);
     }
 
     /* try {
