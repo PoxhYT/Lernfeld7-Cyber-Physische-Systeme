@@ -56,7 +56,15 @@ router.post('/temperatures', async (req, res) => {
             humidity,
             timestamp: new Date().getMilliseconds
         };
-        return res.status(200).send(dataToSave);
+
+        try {
+            const thermalsCollection = collection(getFirestore(), 'thermals');
+            await addDoc(thermalsCollection, dataToSave);
+            res.status(200).send('Data saved successfully');
+        } catch (error) {
+            console.error("Error saving to the database", error);
+            res.status(500).send("Error saving to the database: " + error);
+        }
     }
 
     /* try {
