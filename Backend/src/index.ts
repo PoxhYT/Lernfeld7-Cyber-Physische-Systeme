@@ -45,6 +45,7 @@ const sendTemperatureData = async () => {
     }
 }
 
+app.use(express.json());
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -61,6 +62,8 @@ router.get('/', async (req, res) => {
 
 router.post('/temperatures', async (req, res) => {
     try {
+        console.log(req.body);
+        
         const { temperature, humidity } = req.body;
 
         const dataToSave = {
@@ -82,6 +85,9 @@ router.post('/temperatures', async (req, res) => {
 app.use(router);
 
 app.listen(PORT, () => {
+    const temperature = getRandomNumber(20, 40);
+    const humidity = getRandomNumber(20, 40);
+    console.log(JSON.stringify({ temperature, humidity }));
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 

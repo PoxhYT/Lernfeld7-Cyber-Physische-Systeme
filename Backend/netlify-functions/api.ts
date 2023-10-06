@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 import express from 'express';
-import serverless from 'serverless-http';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc, serverTimestamp  } from 'firebase/firestore';
 
@@ -46,6 +45,7 @@ const sendTemperatureData = async () => {
     }
 }
 
+app.use(express.json());
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -62,6 +62,8 @@ router.get('/', async (req, res) => {
 
 router.post('/temperatures', async (req, res) => {
     try {
+        console.log(req.body);
+        
         const { temperature, humidity } = req.body;
 
         const dataToSave = {
@@ -87,4 +89,3 @@ app.listen(PORT, () => {
 });
 
 app.use(`/.netlify/functions/api`, router);
-module.exports.handler = serverless(app);
