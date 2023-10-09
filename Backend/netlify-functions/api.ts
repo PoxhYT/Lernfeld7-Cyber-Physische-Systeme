@@ -77,7 +77,7 @@ router.post('/temperatures', async (req, res) => {
                     to: 'eia2WOHLQpmQs9Jfq1armi:APA91bH7pwP5YtAxz0ZkX6qYP3J7pnqU67Zf-st3aj9LMEByvJ4N-wgVEY8yMVN2gdaxqq3nOrWNqjiaIFgpjtb6aioAI9MbA46sO-YPmNgURVzyQiUrDEU8Z16MhAvyrozd6PyasZjW',
                     notification: {
                         title: 'Temperature Alert',
-                        body: `The temperature is now ${temperature}°C!`
+                        body: `Die Temperatur ist zu hoch! Bitte denken sie dran sich abzukühlen`
                     }
                 };
     
