@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 import express from 'express';
+import axios from 'axios';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import serverless from 'serverless-http';
@@ -65,6 +66,24 @@ router.post('/temperatures', async (req, res) => {
             const thermalsCollection = collection(getFirestore(), 'thermals');
             await addDoc(thermalsCollection, dataToSave);
             console.log('Data saved successfully');
+
+            if (temperature > 20) {
+                const fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+                const headers = {
+                    'Authorization': 'Bearer AAAA_6sLIsc:APA91bF3FmEExUivYshXp5YJvJQ6Eb6SDUgVwpH5x-fDsCMxsTFWxU3UqDDxP_qkh-G8OyayBDV5hVpEcZtdBWcRlEqJfhwHajxcCm0hXQgFuxT-HDgKyzm-k_zUF2mp8s-V9NY2oZVa',
+                    'Content-Type': 'application/json'
+                };
+                const body = {
+                    to: 'eia2WOHLQpmQs9Jfq1armi:APA91bH7pwP5YtAxz0ZkX6qYP3J7pnqU67Zf-st3aj9LMEByvJ4N-wgVEY8yMVN2gdaxqq3nOrWNqjiaIFgpjtb6aioAI9MbA46sO-YPmNgURVzyQiUrDEU8Z16MhAvyrozd6PyasZjW',
+                    notification: {
+                        title: 'Temperature Alert',
+                        body: `The temperature is now ${temperature}°C!`
+                    }
+                };
+    
+                await axios.post(fcmUrl, body, { headers });
+            }
+
             res.status(200).send('Data saved successfully');
         } catch (error) {
             console.error("Error saving to the database", error);

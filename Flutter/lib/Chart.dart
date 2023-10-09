@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lf_07_cyber_physical_system/models/Thermal.dart';
@@ -22,6 +23,13 @@ class _ChartState extends State<Chart> {
 
   @override
   void initState() {
+    late final FirebaseMessaging _firebaseMessaging;
+    _firebaseMessaging = FirebaseMessaging.instance;
+    _firebaseMessaging.getToken().then((String? token) {
+      assert(token != null);
+      print("FCM Token: $token");
+    });
+
     _trackballBehavior = TrackballBehavior(
         enable: true,
         activationMode: ActivationMode.singleTap,
